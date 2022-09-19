@@ -21,8 +21,6 @@ public class RequestHandler extends Thread {
 
 		
 		this.clientSocket = clientSocket;
-		
-
 		this.server = proxyServer;
 
 		try {
@@ -39,11 +37,17 @@ public class RequestHandler extends Thread {
 	@Override
 	
 	public void run() {
-		
+		try{}
+		catch(IOException e){
+			System.out.println(e);
+		}
+
 		while(true){
 			
 		}
-		/**
+		
+
+		/** I think we do this to do second
 			 * To do
 			 * Process the requests from a client. In particular, 
 			 * (1) Check the request type, only process GET request and ignore others
@@ -76,7 +80,8 @@ public class RequestHandler extends Thread {
 		catch(Exception e){}
 		
 
-		/**
+
+		/** I think we do this to do first
 		 * To do
 		 * (1) Create a socket to connect to the web server (default port 80)
 		 * (2) Send client's request (clientRequest) to the web server, you may want to use flush() after writing.
