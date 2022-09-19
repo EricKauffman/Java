@@ -36,25 +36,9 @@ public class RequestHandler extends Thread {
 
 	}
 
-	
-	public static String getHTML(String inUrl)throws Exception{
-		StringBuilder result = new StringBuilder();
-		URL url = new URL(inUrl);
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("GET");
-		try(BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
-			for (String line; (line = reader.readLine()) != null; ){
-				result.append(line);
-			}
-		}
-
-		return result.toString();
-	}
-
 	@Override
 	
 	public void run() {
-
 		
 		while(true){
 			
@@ -78,6 +62,7 @@ public class RequestHandler extends Thread {
 		Socket toWebServerSocket = null;
 		InputStream inFromServer;
 		OutputStream outToServer;
+		String requestURL = clientRequest.toString();
 		
 		// Create Buffered output stream to write to cached copy of file
 		String fileName = "cached/" + generateRandomFileName() + ".dat";
@@ -85,7 +70,10 @@ public class RequestHandler extends Thread {
 		// to handle binary content, byte is used
 		byte[] serverReply = new byte[4096];
 		
-		
+		try{
+			toWebServerSocket = new Socket(requestURL, 80);
+		}
+		catch(Exception e){}
 		
 
 		/**
