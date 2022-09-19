@@ -21,8 +21,6 @@ public class RequestHandler extends Thread {
 
 		
 		this.clientSocket = clientSocket;
-		
-
 		this.server = proxyServer;
 
 		try {
@@ -36,30 +34,48 @@ public class RequestHandler extends Thread {
 
 	}
 
-	
-	public static String getHTML(String inUrl)throws Exception{
-		StringBuilder result = new StringBuilder();
-		URL url = new URL(inUrl);
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("GET");
-		try(BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))){
-			for (String line; (line = reader.readLine()) != null; ){
-				result.append(line);
-			}
-		}
-
-		return result.toString();
-	}
 
 	@Override
 	
 	public void run() {
 
+		//get the input string
+		//read the string with buffer reader?
+		//if get, then get the url
+		//Write the url to log 
+		//Check if in cache, if respond with data, if not write to cache
+		//Process with proxyServertoCLient
+
+
+		try{
+			//output string
+			DataOutputStream os = new DataOutputStream(clientSocket.getOutputStream());
+			//read the data from the client socket.
+			BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			String results = br.readLine();
+
+			String[] token = results.split(" ");
+			String url = token[1];
+
+			//check if its a get request
+			if(token[0] == "GET"){
+				//Write to the log
+				server.writeLog(url);
+
+				//if results is in chache return answer
+				
+			} 
 		
+		}catch(IOException e){
+			System.out.println(e);
+		}
+
 		while(true){
 			
 		}
-		/**
+		
+
+		/** I think we do this to do second
 			 * To do
 			 * Process the requests from a client. In particular, 
 			 * (1) Check the request type, only process GET request and ignore others
@@ -85,10 +101,9 @@ public class RequestHandler extends Thread {
 		// to handle binary content, byte is used
 		byte[] serverReply = new byte[4096];
 		
-		
-		
 
-		/**
+
+		/** I think we do this to do first
 		 * To do
 		 * (1) Create a socket to connect to the web server (default port 80)
 		 * (2) Send client's request (clientRequest) to the web server, you may want to use flush() after writing.

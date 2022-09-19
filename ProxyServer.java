@@ -72,9 +72,9 @@ public class ProxyServer {
 
 		/*
 			 * To do:
-			 * create a serverSocket to listen on the port (proxyPort)                 
-			 * Create a thread (RequestHandler) for each new client connection        
-			 * remember to catch Exceptions!                                           
+			 * create a serverSocket to listen on the port (proxyPort)      I think this is done           
+			 * Create a thread (RequestHandler) for each new client connection        I think this is also done
+			 * remember to catch Exceptions!                                           I believe this is being done
 			 *
 		*/
 		
