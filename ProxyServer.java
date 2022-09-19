@@ -45,6 +45,7 @@ public class ProxyServer {
 		while(true){
 			
 			ServerSocket serverSocket = null;
+			Socket clientSocket = null;
 			// DataInputStream din = null;
 			// DataOutputStream dout =  null;
 			System.out.println("Server Started");
@@ -53,7 +54,7 @@ public class ProxyServer {
 				
 				serverSocket = new ServerSocket(proxyPort);
 				System.out.println("Waiting for Client");
-				Socket clientSocket = new ServerSocket().accept();
+				clientSocket = new ServerSocket().accept(); //I believe that this is what is creating a new user
 				System.out.println("Client Accepted");
 				// Assign new thread
 				Thread thread = new RequestHandler(clientSocket,this);
