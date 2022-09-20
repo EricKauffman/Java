@@ -37,7 +37,6 @@ public class RequestHandler extends Thread {
 	@Override
 	
 	public void run() {
-<<<<<<< HEAD
 
 		//get the input string
 		//read the string with buffer reader?
@@ -67,15 +66,8 @@ public class RequestHandler extends Thread {
 			} 
 		
 		}catch(IOException e){
-=======
-		try{}
-		catch(IOException e){
->>>>>>> aa7bb35e9fae7d7a14477eee49abc32ae320103d
-			System.out.println(e);
-		}
 
-		while(true){
-			
+
 		}
 		
 
