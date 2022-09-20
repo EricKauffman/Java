@@ -55,14 +55,14 @@ public class ProxyServer {
 				System.out.println("Server Started");			
 
 
-				while(true){
+				//while(true){
 					System.out.println("Waiting for Client");
 					Socket clientSocket = server.accept(); //I believe this is what is creating new client sockets which is then used to create a thread
 					System.out.println("Client Accepted");
 					// Assign new thread
 					Thread thread = new RequestHandler(clientSocket,this);
 					thread.start();
-				}
+				//}
 			}catch(IOException e){
 				System.out.println("Expection Caught on port: " + proxyPort + " or listening for a connection.");
 			}

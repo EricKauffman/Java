@@ -1,9 +1,11 @@
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.Base64;
 
 // RequestHandler is thread that process requests of one client connection
 public class RequestHandler extends Thread {
@@ -35,7 +37,6 @@ public class RequestHandler extends Thread {
 	}
 
 	@Override
-	
 	public void run() {
 
 		//get the input string
@@ -45,37 +46,66 @@ public class RequestHandler extends Thread {
 		//Check if in cache, if respond with data, if not write to cache
 		//Process with proxyServertoCLient
 		
-		while(true){
+		
+
 			try{
-				//output string
-				DataOutputStream os = new DataOutputStream(clientSocket.getOutputStream());
-				//read the data from the client socket.
-				BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				String results = br.readLine();
-	
-				String[] token = results.split(" ");
-				String url = token[1];
-	
-				//check if its a get request
-				if(token[0] == "GET"){
-					//Write to the log
-					server.writeLog(url);
-	
-					String cache = server.getCache(url);
-					if(cache.length()>=1){
-						System.out.println(cache);
-					} else {
-						byte[] clientRequest = results.getBytes();
-						proxyServertoClient(clientRequest);
+				Boolean requestType = false;
+
+				do{
+
+					inFromClient.read(request);
+					System.out.println("Byte request:" + request);
+
+					String requestString = new String(request,StandardCharsets.UTF_8);
+					System.out.println("String Request" + requestString);
+					
+
+					if(requestString.contains("GET")){
+						System.out.println("YAY");
+						requestType = true;
 					}
+				} while(requestType == false);
+				
+				//String results = Base64.getEncoder().encodeToString(request);
+
+				//output string
+				// DataOutputStream os = new DataOutputStream(clientSocket.getOutputStream());
+				//read the data from the client socket.
+				// BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				// String results = br.readLine();
+				// System.out.println("Results: " + results);
 	
-				} 
+				// String[] token = results.split(" ");
+				// System.out.println("token[0]: " + token[0]);
+
+				// String url = token[1];
+				// System.out.println("url: " + url);
+	
+				// //check if its a get request
+				// if(results.contains("GET")){
+				// 	//Write to the log
+				// 	server.writeLog(url);
+				// 	System.out.println("Writing to log: " + url);
+	
+				// 	String cache = server.getCache(url);
+				// 	System.out.println("cache: " + cache);
+
+				// 	// if(cache.length()>=1){
+				// 	// 	System.out.println(cache);
+				// 	// } else {
+				// 	// 	byte[] clientRequest = results.getBytes();
+				// 	// 	proxyServertoClient(clientRequest);
+				// 	// }
+	
+				 
 			
 			}catch(IOException e){
 	
 	
 			}
-		}
+			
+		
+
 		
 		
 
@@ -98,7 +128,7 @@ public class RequestHandler extends Thread {
 			 * I
 			 *
 		*/
-
+		
 	}
 
 	//This server to client means web server to client(Request handler) not proxyserver to client
@@ -117,7 +147,7 @@ public class RequestHandler extends Thread {
 		byte[] serverReply = new byte[4096];
 		
 		try{
-			// connect to the web server
+			// connect to the web server, host name
 			toWebServerSocket = new Socket(requestURL, 80);
 			//write to the server
 			outToServer = toWebServerSocket.getOutputStream();
