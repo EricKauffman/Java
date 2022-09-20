@@ -45,30 +45,38 @@ public class RequestHandler extends Thread {
 		//Check if in cache, if respond with data, if not write to cache
 		//Process with proxyServertoCLient
 		
-
-		try{
-			//output string
-			DataOutputStream os = new DataOutputStream(clientSocket.getOutputStream());
-			//read the data from the client socket.
-			BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			String results = br.readLine();
-
-			String[] token = results.split(" ");
-			String url = token[1];
-
-			//check if its a get request
-			if(token[0] == "GET"){
-				//Write to the log
-				server.writeLog(url);
-
-				//if results is in chache return answer
-
-			} 
-		
-		}catch(IOException e){
-
-
+		while(true){
+			try{
+				//output string
+				DataOutputStream os = new DataOutputStream(clientSocket.getOutputStream());
+				//read the data from the client socket.
+				BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				String results = br.readLine();
+	
+				String[] token = results.split(" ");
+				String url = token[1];
+	
+				//check if its a get request
+				if(token[0] == "GET"){
+					//Write to the log
+					server.writeLog(url);
+	
+					String cache = server.getCache(url);
+					if(cache.length()>=1){
+						System.out.println(cache);
+					} else {
+						byte[] clientRequest = results.getBytes();
+						proxyServertoClient(clientRequest);
+					}
+	
+				} 
+			
+			}catch(IOException e){
+	
+	
+			}
 		}
+		
 		
 
 		/** I think we do this to do second
@@ -78,12 +86,22 @@ public class RequestHandler extends Thread {
              * (2) Write log. 			 * 
 			 * (3) If the url of GET request has been cached, respond with cached content
 			 * (4) Otherwise, call method proxyServertoClient to process the GET request
+			 * 
+			 * 
+			 * Questions: What is the response from the get request
+			 * What format is the request in, is it already in bytes? 
+			 * If so , then we are able to pass that to the proxyServertoClient method
+			 * 
+			 * How do we run this?
+			 * 
+			 * How are thes methods being called? Im assuming we need to be implementing it into each of these code blocks
+			 * I
 			 *
 		*/
 
 	}
 
-	
+	//This server to client means web server to client(Request handler) not proxyserver to client
 	private void proxyServertoClient(byte[] clientRequest) {
 
 		FileOutputStream fileWriter = null;
@@ -99,7 +117,16 @@ public class RequestHandler extends Thread {
 		byte[] serverReply = new byte[4096];
 		
 		try{
+			// connect to the web server
 			toWebServerSocket = new Socket(requestURL, 80);
+			//write to the server
+			outToServer = toWebServerSocket.getOutputStream();
+			//recieve response
+			inFromServer = toWebServerSocket.getInputStream();
+			//serverReply = inFromServer?
+			//write to cache
+			server.putCache(inFromServer.toString(), fileName);
+			// fileWriter.write(clientRequest);
 		}
 		catch(Exception e){}
 		
