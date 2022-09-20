@@ -34,10 +34,10 @@ public class RequestHandler extends Thread {
 
 	}
 
-
 	@Override
 	
 	public void run() {
+<<<<<<< HEAD
 
 		//get the input string
 		//read the string with buffer reader?
@@ -67,6 +67,10 @@ public class RequestHandler extends Thread {
 			} 
 		
 		}catch(IOException e){
+=======
+		try{}
+		catch(IOException e){
+>>>>>>> aa7bb35e9fae7d7a14477eee49abc32ae320103d
 			System.out.println(e);
 		}
 
@@ -94,12 +98,18 @@ public class RequestHandler extends Thread {
 		Socket toWebServerSocket = null;
 		InputStream inFromServer;
 		OutputStream outToServer;
+		String requestURL = clientRequest.toString();
 		
 		// Create Buffered output stream to write to cached copy of file
 		String fileName = "cached/" + generateRandomFileName() + ".dat";
 		
 		// to handle binary content, byte is used
 		byte[] serverReply = new byte[4096];
+		
+		try{
+			toWebServerSocket = new Socket(requestURL, 80);
+		}
+		catch(Exception e){}
 		
 
 
