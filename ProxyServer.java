@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+//Notes: 
 
 public class ProxyServer {
 
@@ -29,7 +29,12 @@ public class ProxyServer {
 	String logFileName = "log.txt";
 
 	public static void main(String[] args) {
-		new ProxyServer().startServer(Integer.parseInt(args[0]));
+		new ProxyServer().startServer(6500);
+
+
+		//Integer.parseInt(args[0])
+		// int proxyPort = 6500;
+		// startServer(proxyPort);
 	}
 
 	void startServer(int proxyPort) {
@@ -42,32 +47,26 @@ public class ProxyServer {
 			cacheDir.mkdirs();
 		}
 
-		while(true){
-			
-			ServerSocket serverSocket = null;
-			// DataInputStream din = null;
-			// DataOutputStream dout =  null;
-			System.out.println("Server Started");
-
+		ServerSocket server = null;
+		
 			try{
 				
-				serverSocket = new ServerSocket(proxyPort);
-				System.out.println("Waiting for Client");
-				Socket clientSocket = new ServerSocket().accept(); //I believe this is what is creating new client sockets which is then used to create a thread
-				System.out.println("Client Accepted");
-				// Assign new thread
-				Thread thread = new RequestHandler(clientSocket,this);
-				thread.start();
-	
+				server = new ServerSocket(proxyPort);
+				System.out.println("Server Started");			
+
+
+				while(true){
+					System.out.println("Waiting for Client");
+					Socket clientSocket = server.accept(); //I believe this is what is creating new client sockets which is then used to create a thread
+					System.out.println("Client Accepted");
+					// Assign new thread
+					Thread thread = new RequestHandler(clientSocket,this);
+					thread.start();
+				}
 			}catch(IOException e){
-				System.out.println("Expection Caught on port: " + proxyPort + "or listening for a connection.");
+				System.out.println("Expection Caught on port: " + proxyPort + " or listening for a connection.");
 			}
 
-			try{
-			serverSocket.close();
-			} catch(IOException e){
-
-			}
 		}
 
 		/*
@@ -79,7 +78,6 @@ public class ProxyServer {
 		*/
 		
 		
-	}
 
 
 

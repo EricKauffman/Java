@@ -124,8 +124,11 @@ public class RequestHandler extends Thread {
 			//recieve response
 			inFromServer = toWebServerSocket.getInputStream();
 			//serverReply = inFromServer?
+			//Write bytes to file
+			fileWriter.write(serverReply);
 			//write to cache
-			server.putCache(inFromServer.toString(), fileName);
+			sendCachedInfoToClient(fileName);
+			server.putCache(requestURL, fileName);
 			// fileWriter.write(clientRequest);
 		}
 		catch(Exception e){}
