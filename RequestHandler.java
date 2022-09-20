@@ -45,7 +45,7 @@ public class RequestHandler extends Thread {
 		//Write the url to log 
 		//Check if in cache, if respond with data, if not write to cache
 		//Process with proxyServertoCLient
-
+		
 
 		try{
 			//output string
@@ -63,7 +63,7 @@ public class RequestHandler extends Thread {
 				server.writeLog(url);
 
 				//if results is in chache return answer
-				
+
 			} 
 		
 		}catch(IOException e){
