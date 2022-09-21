@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Base64;
 
 // RequestHandler is thread that process requests of one client connection
@@ -49,22 +50,31 @@ public class RequestHandler extends Thread {
 		
 
 			try{
-				Boolean requestType = false;
 
-				do{
-
+				while(true){
+					clientSocket.getInputStream().reset();
+					System.out.println("While loop starting");
+					System.out.println("inFromClient prior to reading it-----------" + inFromClient);
 					inFromClient.read(request);
-					System.out.println("Byte request:" + request);
+					System.out.println("Byte request ---------- " + request);
 
 					String requestString = new String(request,StandardCharsets.UTF_8);
-					System.out.println("String Request" + requestString);
+					System.out.println("String Request -------" + requestString);
 					
 
 					if(requestString.contains("GET")){
-						System.out.println("YAY");
-						requestType = true;
+						//if in cache
+						System.out.println("YAY!!!!!!!!!!!!!!!!!!!!!!!!");
+						String[] token = requestString.split(" ");
+						server.writeLog(token[1]);
+						break;
+					} else {
+						
+						System.out.println("Empty request------------- " + request);
 					}
-				} while(requestType == false);
+					System.out.println("While loop ending");
+					
+				} 
 				
 				//String results = Base64.getEncoder().encodeToString(request);
 
