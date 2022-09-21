@@ -5,8 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Base64;
+
+
+import javax.swing.plaf.synth.SynthSplitPaneUI;
 
 // RequestHandler is thread that process requests of one client connection
 public class RequestHandler extends Thread {
@@ -47,19 +48,19 @@ public class RequestHandler extends Thread {
 		//Check if in cache, if respond with data, if not write to cache
 		//Process with proxyServertoCLient
 		
-		
-
+		int counter = 0;
+		while(true){
 			try{
 
-				while(true){
-					
-					System.out.println("While loop starting");
-					System.out.println("inFromClient prior to reading it-----------" + inFromClient);
+				
+					//inFromClient.mark(1024);
+					System.out.println("-------------While loop starting and reading inFromClient--------------");
 					inFromClient.read(request);
-					System.out.println("Byte request ---------- " + request);
+				
+					System.out.println("Byte request -------------------------- " + request);
 
 					String requestString = new String(request,StandardCharsets.UTF_8);
-					System.out.println("String Request -------" + requestString);
+					System.out.println("String Request ------------------------" + requestString);
 					
 
 					if(requestString.contains("GET")){
@@ -67,14 +68,29 @@ public class RequestHandler extends Thread {
 						System.out.println("YAY!!!!!!!!!!!!!!!!!!!!!!!!");
 						String[] token = requestString.split(" ");
 						server.writeLog(token[1]);
-						break;
-					} else {
-						
-						System.out.println("Empty request------------- " + request);
-					}
-					System.out.println("While loop ending");
-					
-				} 
+						//break;
+						} else {
+							System.out.println("-------------------------Invalid request-------------------------- " + request);
+							inFromClient.close();
+							outToClient.flush();
+							clientSocket.close();
+						}
+
+					System.out.println("--------------------While loop ending-------------------------");
+					counter++;
+
+				}catch(IOException e){
+					System.out.println("Exception found: " + e);
+					counter++;
+		
+				}
+				
+				if(counter > 3){
+					break;
+				}
+
+			} 
+				System.out.println("bombed out of loop");
 				
 				//String results = Base64.getEncoder().encodeToString(request);
 
@@ -109,10 +125,7 @@ public class RequestHandler extends Thread {
 	
 				 
 			
-			}catch(IOException e){
-	
-	
-			}
+			
 			
 		
 
