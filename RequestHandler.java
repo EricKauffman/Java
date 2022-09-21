@@ -52,7 +52,7 @@ public class RequestHandler extends Thread {
 			try{
 
 				while(true){
-					clientSocket.getInputStream().reset();
+					
 					System.out.println("While loop starting");
 					System.out.println("inFromClient prior to reading it-----------" + inFromClient);
 					inFromClient.read(request);
