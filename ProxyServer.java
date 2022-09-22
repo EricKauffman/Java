@@ -94,7 +94,7 @@ public class ProxyServer {
 
 			try{
 				FileWriter myWriter = new FileWriter(logFileName);
-				myWriter.write(info + "/n" + timeStamp);
+				myWriter.write(info + " " + timeStamp);
 				myWriter.close();
 			}catch(IOException e){
 				System.out.println(e + "File Not Found");

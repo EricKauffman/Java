@@ -50,13 +50,13 @@ public class RequestHandler extends Thread {
 		
 		int counter = 0;
 		while(true){
+			
 			try{
 
-				
+					// inFromClient = clientSocket.getInputStream();
 					//inFromClient.mark(1024);
 					System.out.println("-------------While loop starting and reading inFromClient--------------");
 					inFromClient.read(request);
-				
 					System.out.println("Byte request -------------------------- " + request);
 
 					String requestString = new String(request,StandardCharsets.UTF_8);
@@ -71,9 +71,7 @@ public class RequestHandler extends Thread {
 						//break;
 						} else {
 							System.out.println("-------------------------Invalid request-------------------------- " + request);
-							inFromClient.close();
-							outToClient.flush();
-							clientSocket.close();
+
 						}
 
 					System.out.println("--------------------While loop ending-------------------------");
@@ -85,9 +83,10 @@ public class RequestHandler extends Thread {
 		
 				}
 				
-				if(counter > 3){
+				if(counter > 30){
 					break;
 				}
+				
 
 			} 
 				System.out.println("bombed out of loop");
