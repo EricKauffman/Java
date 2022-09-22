@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-
+import java.util.Arrays;
 
 import javax.swing.plaf.synth.SynthSplitPaneUI;
 
@@ -29,7 +29,12 @@ public class RequestHandler extends Thread {
 
 		try {
 			clientSocket.setSoTimeout(2000);
-			inFromClient = clientSocket.getInputStream();
+			inFromClient = clientSocket.getInputStream(); //how does this work? is this simplying saying that we will 
+			//assign the inputStream whatever comes from the client socket? If so then how is this getting reassigned?Is this assignment 
+			//everytime? otherwise, isn't it just going to fill up once?
+			
+			//I get it. So we assign the first 1024 bytes from the inputStream. If those bytes dont equal "GET" than we need to reset and try again
+			//so challeneges to complete: assign the first set of bytes to the request variable. Analyze. Reset.
 			outToClient = clientSocket.getOutputStream();
 
 		} catch (Exception e) {
@@ -56,7 +61,11 @@ public class RequestHandler extends Thread {
 					// inFromClient = clientSocket.getInputStream();
 					//inFromClient.mark(1024);
 					System.out.println("-------------While loop starting and reading inFromClient--------------");
-					inFromClient.read(request);
+					System.out.println("REQUEST PRIOR ASSIGNMENT/RESET: " + request);
+					Arrays.fill(request, (byte)0);
+					System.out.println("REQUEST AFTER RESET: " + request);
+					inFromClient.read(request, 0 ,request.length);
+					
 					System.out.println("Byte request -------------------------- " + request);
 
 					String requestString = new String(request,StandardCharsets.UTF_8);
@@ -64,11 +73,32 @@ public class RequestHandler extends Thread {
 					
 
 					if(requestString.contains("GET")){
+
+						String[] token = requestString.split(" ");
+						String url = token[1];
+						InetAddress inet = null;
+						String[] preHost = url.split("/");
+						String host = preHost[2];
+						String ip = null;
+						String info = ip + " " + host;
+
+						try {
+							inet = InetAddress.getByName(host);
+							ip = inet.getHostAddress();
+							System.out.println("Ip Address here: " + ip);
+						} catch (Exception e) {
+							System.out.println("Exception found: " + e);
+						}
+
+
 						//if in cache
 						System.out.println("YAY!!!!!!!!!!!!!!!!!!!!!!!!");
-						String[] token = requestString.split(" ");
-						server.writeLog(token[1]);
+						server.writeLog(info);
 						//break;
+
+
+
+
 						} else {
 							System.out.println("-------------------------Invalid request-------------------------- " + request);
 
