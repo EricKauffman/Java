@@ -29,14 +29,9 @@ public class RequestHandler extends Thread {
 		this.server = proxyServer;
 
 		try {
-
+			clientSocket.setSoTimeout(2000);
 			inFromClient = clientSocket.getInputStream();
-
-			// clientSocket.setSoTimeout(2000);
-			// br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			// PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
-			// outToClient = clientSocket.getOutputStream();
-
+			outToClient = clientSocket.getOutputStream();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,137 +41,41 @@ public class RequestHandler extends Thread {
 	@Override
 	public void run() {
 
-		//get the input string
-		//read the string with buffer reader?
-		//if get, then get the url
-		//Write the url to log 
-		//Check if in cache, if respond with data, if not write to cache
-		//Process with proxyServertoCLient
-		
-		int counter = 0;
 		try {
-			//this is a test to try and submit a git
-			
-			
-		
-		while((counter = inFromClient.read(request)) != -1){
-			
-				
-					//System.out.println(inFromClient.available());
-					
-					// inFromClient = clientSocket.getInputStream();
-					//inFromClient.mark(1024);
-					System.out.println("-------------While loop starting and reading inFromClient--------------");
 
-					//String requestString = "";
+			int counter = 0;
+			while((counter = inFromClient.read(request)) != -1){
 
-					// try {
-					// 	requestString = br.readLine();
-					// } catch (Exception e) {
-						
-					// }
-					
 					String requestString = new String(request,StandardCharsets.UTF_8);
 					System.out.println("String Request ------------------------" + requestString);
 					
-
+					//If get
 					if(requestString.contains("GET")){
 
 							String[] token = requestString.split(" ");
 							String url = token[1];
-							InetAddress inet = null;
 							String[] preHost = url.split("/");
 							String host = preHost[2];
-							String ip = null;
+							String ip = InetAddress.getByName(host).getHostAddress();
 							String info = ip + " " + host;
-
-							try {
-									inet = InetAddress.getByName(host);
-									ip = inet.getHostAddress();
-									System.out.println("Ip Address here: " + ip);
-								} catch (Exception e) {
-									System.out.println("Exception found: " + e);
-								}
-
-							//if in cache
-							System.out.println("YAY!!!!!!!!!!!!!!!!!!!!!!!!");
+							System.out.println(info + " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 							server.writeLog(info);
-							//break;
-
 						}
-							System.out.println("-------------------------Invalid request-------------------------- " + request);
-						counter = 0;
-						
 
-					
+					}
+				} catch (Exception e) {
+					System.out.println("Exception Found: " + e);
+				}
+			
 				
-			
-		}
-		System.out.println("--------------------While loop ending-------------------------");
-	} catch (Exception e) {
-		// TODO: handle exception
-	}
-			
-				System.out.println("bombed out of BIG loop");
-				
-				//String results = Base64.getEncoder().encodeToString(request);
 
-				//output string
-				// DataOutputStream os = new DataOutputStream(clientSocket.getOutputStream());
-				//read the data from the client socket.
-				// BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				// String results = br.readLine();
-				// System.out.println("Results: " + results);
-	
-				// String[] token = results.split(" ");
-				// System.out.println("token[0]: " + token[0]);
-
-				// String url = token[1];
-				// System.out.println("url: " + url);
-	
-				// //check if its a get request
-				// if(results.contains("GET")){
-				// 	//Write to the log
-				// 	server.writeLog(url);
-				// 	System.out.println("Writing to log: " + url);
-	
-				// 	String cache = server.getCache(url);
-				// 	System.out.println("cache: " + cache);
-
-				// 	// if(cache.length()>=1){
-				// 	// 	System.out.println(cache);
-				// 	// } else {
-				// 	// 	byte[] clientRequest = results.getBytes();
-				// 	// 	proxyServertoClient(clientRequest);
-				// 	// }
-	
-				 
-			
-			
-			
-		
-
-		
-		
-
-		/** I think we do this to do second
+		/** 
 			 * To do
 			 * Process the requests from a client. In particular, 
 			 * (1) Check the request type, only process GET request and ignore others
              * (2) Write log. 			 * 
 			 * (3) If the url of GET request has been cached, respond with cached content
 			 * (4) Otherwise, call method proxyServertoClient to process the GET request
-			 * 
-			 * 
-			 * Questions: What is the response from the get request
-			 * What format is the request in, is it already in bytes? 
-			 * If so , then we are able to pass that to the proxyServertoClient method
-			 * 
-			 * How do we run this?
-			 * 
-			 * How are thes methods being called? Im assuming we need to be implementing it into each of these code blocks
-			 * I
-			 *
 		*/
 		
 	}
@@ -269,3 +168,4 @@ public class RequestHandler extends Thread {
 	}
 
 }
+
