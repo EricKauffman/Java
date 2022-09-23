@@ -17,6 +17,7 @@ public class RequestHandler extends Thread {
 	InputStream inFromClient;
 	OutputStream outToClient;
 	byte[] request = new byte[1024];
+	BufferedReader br;
 
 	private ProxyServer server;
 
@@ -28,14 +29,13 @@ public class RequestHandler extends Thread {
 		this.server = proxyServer;
 
 		try {
-			clientSocket.setSoTimeout(2000);
-			inFromClient = clientSocket.getInputStream(); //how does this work? is this simplying saying that we will 
-			//assign the inputStream whatever comes from the client socket? If so then how is this getting reassigned?Is this assignment 
-			//everytime? otherwise, isn't it just going to fill up once?
-			
-			//I get it. So we assign the first 1024 bytes from the inputStream. If those bytes dont equal "GET" than we need to reset and try again
-			//so challeneges to complete: assign the first set of bytes to the request variable. Analyze. Reset.
-			outToClient = clientSocket.getOutputStream();
+
+			inFromClient = clientSocket.getInputStream();
+
+			// clientSocket.setSoTimeout(2000);
+			// br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			// PrintWriter out = new PrintWriter(clientSocket.getOutputStream());
+			// outToClient = clientSocket.getOutputStream();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -54,72 +54,68 @@ public class RequestHandler extends Thread {
 		//Process with proxyServertoCLient
 		
 		int counter = 0;
-		while(true){
+		try {
 			
-			try{
-
+		
+		while((counter = inFromClient.read(request)) != -1){
+			
+				
+					//System.out.println(inFromClient.available());
+					
 					// inFromClient = clientSocket.getInputStream();
 					//inFromClient.mark(1024);
 					System.out.println("-------------While loop starting and reading inFromClient--------------");
-					System.out.println("REQUEST PRIOR ASSIGNMENT/RESET: " + request);
-					Arrays.fill(request, (byte)0);
-					System.out.println("REQUEST AFTER RESET: " + request);
-					inFromClient.read(request, 0 ,request.length);
-					
-					System.out.println("Byte request -------------------------- " + request);
 
+					//String requestString = "";
+
+					// try {
+					// 	requestString = br.readLine();
+					// } catch (Exception e) {
+						
+					// }
+					
 					String requestString = new String(request,StandardCharsets.UTF_8);
 					System.out.println("String Request ------------------------" + requestString);
 					
 
 					if(requestString.contains("GET")){
 
-						String[] token = requestString.split(" ");
-						String url = token[1];
-						InetAddress inet = null;
-						String[] preHost = url.split("/");
-						String host = preHost[2];
-						String ip = null;
-						String info = ip + " " + host;
+							String[] token = requestString.split(" ");
+							String url = token[1];
+							InetAddress inet = null;
+							String[] preHost = url.split("/");
+							String host = preHost[2];
+							String ip = null;
+							String info = ip + " " + host;
 
-						try {
-							inet = InetAddress.getByName(host);
-							ip = inet.getHostAddress();
-							System.out.println("Ip Address here: " + ip);
-						} catch (Exception e) {
-							System.out.println("Exception found: " + e);
+							try {
+									inet = InetAddress.getByName(host);
+									ip = inet.getHostAddress();
+									System.out.println("Ip Address here: " + ip);
+								} catch (Exception e) {
+									System.out.println("Exception found: " + e);
+								}
+
+							//if in cache
+							System.out.println("YAY!!!!!!!!!!!!!!!!!!!!!!!!");
+							server.writeLog(info);
+							//break;
+
 						}
-
-
-						//if in cache
-						System.out.println("YAY!!!!!!!!!!!!!!!!!!!!!!!!");
-						server.writeLog(info);
-						//break;
-
-
-
-
-						} else {
 							System.out.println("-------------------------Invalid request-------------------------- " + request);
+						counter = 0;
+						
 
-						}
-
-					System.out.println("--------------------While loop ending-------------------------");
-					counter++;
-
-				}catch(IOException e){
-					System.out.println("Exception found: " + e);
-					counter++;
-		
-				}
+					
 				
-				if(counter > 30){
-					break;
-				}
-				
-
-			} 
-				System.out.println("bombed out of loop");
+			
+		}
+		System.out.println("--------------------While loop ending-------------------------");
+	} catch (Exception e) {
+		// TODO: handle exception
+	}
+			
+				System.out.println("bombed out of BIG loop");
 				
 				//String results = Base64.getEncoder().encodeToString(request);
 
