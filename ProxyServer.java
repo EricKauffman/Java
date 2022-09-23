@@ -91,10 +91,10 @@ public class ProxyServer {
 
 	public synchronized void writeLog(String info) {
 		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-
+		String data = timeStamp + " " + info + "\n";
 			try{
-				FileWriter myWriter = new FileWriter(logFileName);
-				myWriter.append(timeStamp + " " + info + "\n");
+				FileWriter myWriter = new FileWriter(logFileName,true);
+				myWriter.write(data);
 				myWriter.close();
 			}catch(IOException e){
 				System.out.println(e + "File Not Found");
