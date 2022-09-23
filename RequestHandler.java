@@ -60,6 +60,15 @@ public class RequestHandler extends Thread {
 							String info = ip + " " + host;
 							System.out.println(info + " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 							server.writeLog(info);
+						
+							//if cache
+							if(server.getCache(requestString) != null){
+								sendCachedInfoToClient(requestString);
+							} else {
+								proxyServertoClient(request);
+							}
+						
+						
 						}
 
 					}
@@ -87,7 +96,7 @@ public class RequestHandler extends Thread {
 		Socket toWebServerSocket = null;
 		InputStream inFromServer;
 		OutputStream outToServer;
-		String requestURL = clientRequest.toString();
+		String requestURL;
 		
 		// Create Buffered output stream to write to cached copy of file
 		String fileName = "cached/" + generateRandomFileName() + ".dat";
@@ -96,19 +105,19 @@ public class RequestHandler extends Thread {
 		byte[] serverReply = new byte[4096];
 		
 		try{
-			// connect to the web server, host name
-			toWebServerSocket = new Socket(requestURL, 80);
-			//write to the server
-			outToServer = toWebServerSocket.getOutputStream();
-			//recieve response
-			inFromServer = toWebServerSocket.getInputStream();
-			//serverReply = inFromServer?
-			//Write bytes to file
-			fileWriter.write(serverReply);
-			//write to cache
-			sendCachedInfoToClient(fileName);
-			server.putCache(requestURL, fileName);
-			// fileWriter.write(clientRequest);
+			// // connect to the web server, host name
+			// toWebServerSocket = new Socket(requestURL, 80);
+			// //write to the server
+			// outToServer = toWebServerSocket.getOutputStream();
+			// //recieve response
+			// inFromServer = toWebServerSocket.getInputStream();
+			// //serverReply = inFromServer?
+			// //Write bytes to file
+			// fileWriter.write(serverReply);
+			// //write to cache
+			// sendCachedInfoToClient(fileName);
+			// server.putCache(requestURL, fileName);
+			// // fileWriter.write(clientRequest);
 		}
 		catch(Exception e){}
 		
