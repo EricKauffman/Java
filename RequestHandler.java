@@ -63,7 +63,7 @@ public class RequestHandler extends Thread {
 						
 							//if cache
 							if(server.getCache(requestString) != null){
-								sendCachedInfoToClient(requestString);
+								sendCachedInfoToClient(requestString);				//Does this need to be a filename? private void sendCachedInfoToClient(String fileName)
 							} else {
 								proxyServertoClient(request);
 							}
@@ -72,9 +72,11 @@ public class RequestHandler extends Thread {
 						}
 
 					}
-				} catch (Exception e) {
+				} 
+				catch (Exception e) {
 					System.out.println("Exception Found: " + e);
 				}
+				
 			
 				
 
@@ -96,30 +98,36 @@ public class RequestHandler extends Thread {
 		Socket toWebServerSocket = null;
 		InputStream inFromServer;
 		OutputStream outToServer;
-		String requestURL;
+		String requestString = new String(clientRequest,StandardCharsets.UTF_8);
+		String[] token = requestString.split(" ");
+		String requestURL = token[1];
 		
 		// Create Buffered output stream to write to cached copy of file
 		String fileName = "cached/" + generateRandomFileName() + ".dat";
 		
 		// to handle binary content, byte is used
 		byte[] serverReply = new byte[4096];
-		
+		System.out.println("BEFORE THE TRY BLOCK OF PROXYSERVERTOCLIENT ++++++++++++++++++++++++++++");
 		try{
-			// // connect to the web server, host name
-			// toWebServerSocket = new Socket(requestURL, 80);
-			// //write to the server
-			// outToServer = toWebServerSocket.getOutputStream();
-			// //recieve response
-			// inFromServer = toWebServerSocket.getInputStream();
-			// //serverReply = inFromServer?
-			// //Write bytes to file
-			// fileWriter.write(serverReply);
-			// //write to cache
-			// sendCachedInfoToClient(fileName);
-			// server.putCache(requestURL, fileName);
-			// // fileWriter.write(clientRequest);
+			// connect to the web server, host name
+			toWebServerSocket = new Socket(requestURL, 80);			//java.net.UnknownHostException http://detectportal.firefox.com/canonical.html
+			//write to the server																			//while loop here? 
+			outToServer = toWebServerSocket.getOutputStream();
+			//recieve response
+			inFromServer = toWebServerSocket.getInputStream();
+			serverReply = inFromServer.readAllBytes();
+			//Write bytes to file
+			fileWriter = new FileOutputStream(fileName);
+			fileWriter.write(serverReply);
+			System.out.println("did we make it here?");
+			//write to cache
+			sendCachedInfoToClient(fileName);
+			server.putCache(requestURL, fileName);
+			//fileWriter.write(clientRequest, true);
+			fileWriter.close();
+			toWebServerSocket.close();
 		}
-		catch(Exception e){}
+		catch(Exception e){ e.printStackTrace(); }
 		
 
 
