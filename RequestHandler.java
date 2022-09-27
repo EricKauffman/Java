@@ -39,7 +39,7 @@ public class RequestHandler extends Thread {
 	}
 
 	@Override
-	public void run() {
+	public void run() {				// test URL: http://students.cs.ndsu.nodak.edu
 
 		try {
 
@@ -112,9 +112,9 @@ public class RequestHandler extends Thread {
 		System.out.println("+++++++++++++++++++++++++++BEFORE THE TRY BLOCK OF PROXYSERVERTOCLIENT ++++++++++++++++++++++++++++");
 		try{
 			// connect to the web server, host name
-			toWebServerSocket = new Socket(host, 80);			//java.net.UnknownHostException http://detectportal.firefox.com/canonical.html
+			toWebServerSocket = new Socket(host, 80);		  //java.net.UnknownHostException http://detectportal.firefox.com/canonical.html
 																												 //Now no error, but don't make it to "did we make it here?" statement
-
+																												 //Captured hostname detectportal.firefox.com
 																												 
 			//write to the server																			//while loop here? Eric-I think so? I Think we did what we did above where we read for the entirety of the response?
 			outToServer = toWebServerSocket.getOutputStream();
@@ -124,10 +124,10 @@ public class RequestHandler extends Thread {
 			//Write bytes to file
 			fileWriter = new FileOutputStream(fileName);
 			fileWriter.write(serverReply);
-			System.out.println("did we make it here?");
+			System.out.println("did we make it here?");		//The answer was no :(
 			//write to cache
 			sendCachedInfoToClient(fileName);
-			server.putCache(requestURL, fileName);
+			server.putCache(host, fileName);
 			//fileWriter.write(clientRequest, true);
 			fileWriter.close();
 			toWebServerSocket.close();
