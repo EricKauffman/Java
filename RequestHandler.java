@@ -101,16 +101,21 @@ public class RequestHandler extends Thread {
 		String requestString = new String(clientRequest,StandardCharsets.UTF_8);
 		String[] token = requestString.split(" ");
 		String requestURL = token[1];
+		String[] preHost = requestURL.split("/");
+		String host = preHost[2];
 		
 		// Create Buffered output stream to write to cached copy of file
 		String fileName = "cached/" + generateRandomFileName() + ".dat";
 		
 		// to handle binary content, byte is used
 		byte[] serverReply = new byte[4096];
-		System.out.println("BEFORE THE TRY BLOCK OF PROXYSERVERTOCLIENT ++++++++++++++++++++++++++++");
+		System.out.println("+++++++++++++++++++++++++++BEFORE THE TRY BLOCK OF PROXYSERVERTOCLIENT ++++++++++++++++++++++++++++");
 		try{
 			// connect to the web server, host name
-			toWebServerSocket = new Socket(requestURL, 80);			//java.net.UnknownHostException http://detectportal.firefox.com/canonical.html
+			toWebServerSocket = new Socket(host, 80);			//java.net.UnknownHostException http://detectportal.firefox.com/canonical.html
+																												 //Now no error, but don't make it to "did we make it here?" statement
+
+																												 
 			//write to the server																			//while loop here? 
 			outToServer = toWebServerSocket.getOutputStream();
 			//recieve response
