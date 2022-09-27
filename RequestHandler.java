@@ -17,7 +17,6 @@ public class RequestHandler extends Thread {
 	InputStream inFromClient;
 	OutputStream outToClient;
 	byte[] request = new byte[1024];
-	BufferedReader br;
 
 	private ProxyServer server;
 
@@ -63,7 +62,8 @@ public class RequestHandler extends Thread {
 						
 							//if cache
 							if(server.getCache(requestString) != null){
-								sendCachedInfoToClient(requestString);				//Does this need to be a filename? private void sendCachedInfoToClient(String fileName)
+								//get file name from cache, aka the value. The key is the url
+								sendCachedInfoToClient(server.getCache(url));				//Does this need to be a filename? private void sendCachedInfoToClient(String fileName)
 							} else {
 								proxyServertoClient(request);
 							}
@@ -91,76 +91,63 @@ public class RequestHandler extends Thread {
 		
 	}
 
-	//This server to client means web server to client(Request handler) not proxyserver to client
+	
 	private void proxyServertoClient(byte[] clientRequest) {
 
 		FileOutputStream fileWriter = null;
 		Socket toWebServerSocket = null;
 		InputStream inFromServer;
 		OutputStream outToServer;
+
+		// to handle binary content, byte is used
+		byte[] serverReply = new byte[4096];
+		
+		// Create Buffered output stream to write to cached copy of file
+		String fileName = "cached/" + generateRandomFileName() + ".dat";
+		//get request String
 		String requestString = new String(clientRequest,StandardCharsets.UTF_8);
+		//get host name
 		String[] token = requestString.split(" ");
 		String requestURL = token[1];
 		String[] preHost = requestURL.split("/");
 		String host = preHost[2];
-		
-		// Create Buffered output stream to write to cached copy of file
-		String fileName = "cached/" + generateRandomFileName() + ".dat";
-		File cacheFile = new File(fileName);
-
-		
 
 
-
-		// to handle binary content, byte is used
-		byte[] serverReply = new byte[4096];
 		System.out.println("+++++++++++++++++++++++++++BEFORE THE TRY BLOCK OF PROXYSERVERTOCLIENT ++++++++++++++++++++++++++++");
-		
-		
 		try{
-			if(!cacheFile.exists()){
-				
-				cacheFile.createNewFile();
-				System.out.println("Created Cache file");
-			}
-			FileWriter wr = new FileWriter(fileName);
 
 			// connect to the web server, host name
-			toWebServerSocket = new Socket(host, 80);		  //java.net.UnknownHostException http://detectportal.firefox.com/canonical.html
-																												 //Now no error, but don't make it to "did we make it here?" statement
-																												 //Captured hostname detectportal.firefox.com
-																												 
-			//write to the server																			//while loop here? Eric-I think so? I Think we did what we did above where we read for the entirety of the response?
-			outToServer = toWebServerSocket.getOutputStream();
-			//recieve response
+			toWebServerSocket = new Socket(host, 80);																										 
+			//create infromserver inputstream and output streaam
 			inFromServer = toWebServerSocket.getInputStream();
+			outToServer = toWebServerSocket.getOutputStream();
+			//creae buffer writer for writing to the cache
+			BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(fileName));
+			//Write the client request to the webserver
+			outToServer.write(clientRequest);
+			//flush
+			outToServer.flush();
 
 
-			System.out.println("Pre-While");
-			int counter = 0;
-
+			//process response from web server
+			System.out.println("Pre-While"); /*Creating counter for while*/ int counter = 0;
+			//Read the response from the server until it is empty and no more data is coming across the pipe/socket
 			while((counter = inFromServer.read(serverReply))!= -1){
 				System.out.println("in while");
-				outToServer.write(clientRequest);
+				//write the data from the response to the file
+				out.write(serverReply);
 				System.out.println("done while");
 			}
 			
-			outToServer.flush();
-			//cache it 
-			//cacheFile.write(serverReply);
-			
-
-
-			//Write bytes to file
-			fileWriter = new FileOutputStream(fileName);
-			fileWriter.write(serverReply);
-			System.out.println("did we make it here?");		//The answer was no :(
 			//write to cache
 			sendCachedInfoToClient(fileName);
 			server.putCache(host, fileName);
-			//fileWriter.write(clientRequest, true);
-			fileWriter.close();
+
+			//Close sockets and file. Needs to be checked/fixed, maybe
+			out.close();
 			toWebServerSocket.close();
+			inFromServer.close();
+			inFromClient.close();
 		}
 		catch(Exception e){ e.printStackTrace(); }
 		

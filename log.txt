@@ -6,3 +6,8 @@
 2022.09.27.15.24.33 134.129.125.83 students.cs.ndsu.nodak.edu
 2022.09.27.15.25.41 134.129.125.83 students.cs.ndsu.nodak.edu
 2022.09.27.15.25.54 34.107.221.82 detectportal.firefox.com
+2022.09.27.16.09.14 134.129.125.83 students.cs.ndsu.nodak.edu
+2022.09.27.16.09.19 134.129.125.83 students.cs.ndsu.nodak.edu
+2022.09.27.16.09.25 134.129.125.83 students.cs.ndsu.nodak.edu
+2022.09.27.16.17.02 134.129.125.83 students.cs.ndsu.nodak.edu
+2022.09.27.16.17.07 134.129.125.83 students.cs.ndsu.nodak.edu
