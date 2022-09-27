@@ -1,12 +1,5 @@
-2022.09.27.14.12.37 34.107.221.82 detectportal.firefox.com
-2022.09.27.14.12.42 34.107.221.82 detectportal.firefox.com
-2022.09.27.14.12.44 134.129.125.83 students.cs.ndsu.nodak.edu
-2022.09.27.14.12.47 34.107.221.82 detectportal.firefox.com
-2022.09.27.14.12.52 34.107.221.82 detectportal.firefox.com
-2022.09.27.14.14.17 34.107.221.82 detectportal.firefox.com
-2022.09.27.14.14.22 34.107.221.82 detectportal.firefox.com
-2022.09.27.14.14.25 134.129.125.83 students.cs.ndsu.nodak.edu
-2022.09.27.14.14.27 34.107.221.82 detectportal.firefox.com
-2022.09.27.14.14.32 34.107.221.82 detectportal.firefox.com
-2022.09.27.14.14.37 34.107.221.82 detectportal.firefox.com
-2022.09.27.14.14.42 34.107.221.82 detectportal.firefox.com
+2022.09.27.14.28.04 134.129.125.83 students.cs.ndsu.nodak.edu
+2022.09.27.14.51.07 134.129.125.83 students.cs.ndsu.nodak.edu
+2022.09.27.15.10.45 134.129.125.83 students.cs.ndsu.nodak.edu
+2022.09.27.15.11.00 134.129.125.83 students.cs.ndsu.nodak.edu
+2022.09.27.15.11.29 34.107.221.82 detectportal.firefox.com
