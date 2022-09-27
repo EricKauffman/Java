@@ -116,7 +116,7 @@ public class RequestHandler extends Thread {
 																												 //Now no error, but don't make it to "did we make it here?" statement
 
 																												 
-			//write to the server																			//while loop here? 
+			//write to the server																			//while loop here? Eric-I think so? I Think we did what we did above where we read for the entirety of the response?
 			outToServer = toWebServerSocket.getOutputStream();
 			//recieve response
 			inFromServer = toWebServerSocket.getInputStream();
