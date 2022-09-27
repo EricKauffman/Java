@@ -120,7 +120,7 @@ public class RequestHandler extends Thread {
 			outToServer = toWebServerSocket.getOutputStream();
 			//recieve response
 			inFromServer = toWebServerSocket.getInputStream();
-			serverReply = inFromServer.readAllBytes();
+			inFromServer.read(serverReply);
 			//Write bytes to file
 			fileWriter = new FileOutputStream(fileName);
 			fileWriter.write(serverReply);
