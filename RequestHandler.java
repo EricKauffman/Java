@@ -47,10 +47,11 @@ public class RequestHandler extends Thread {
 			while((counter = inFromClient.read(request)) != -1){
 
 					String requestString = new String(request,StandardCharsets.UTF_8);
-										
+					System.out.println("String Request ------------------------" + requestString);
+					
 					//If get
 					if(requestString.contains("GET")){
-						System.out.println("String Request ------------------------" + requestString);
+
 							String[] token = requestString.split(" ");
 							String url = token[1];
 							String[] preHost = url.split("/");
@@ -98,7 +99,6 @@ public class RequestHandler extends Thread {
 		InputStream inFromServer;
 		OutputStream outToServer;
 		String requestString = new String(clientRequest,StandardCharsets.UTF_8);
-
 		String[] token = requestString.split(" ");
 		String requestURL = token[1];
 		String[] preHost = requestURL.split("/");
@@ -106,66 +106,61 @@ public class RequestHandler extends Thread {
 		
 		// Create Buffered output stream to write to cached copy of file
 		String fileName = "cached/" + generateRandomFileName() + ".dat";
+		File cacheFile = new File(fileName);
+
 		
+
+
+
 		// to handle binary content, byte is used
 		byte[] serverReply = new byte[4096];
-
-
-
-
-
-
 		System.out.println("+++++++++++++++++++++++++++BEFORE THE TRY BLOCK OF PROXYSERVERTOCLIENT ++++++++++++++++++++++++++++");
-
-
+		
+		
 		try{
+			if(!cacheFile.exists()){
+				
+				cacheFile.createNewFile();
+				System.out.println("Created Cache file");
+			}
+			FileWriter wr = new FileWriter(fileName);
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(toWebServerSocket.getInputStream()));
-		
-		
 			// connect to the web server, host name
-			toWebServerSocket = new Socket(host, 80);		
-			toWebServerSocket.setSoTimeout(2000);  //java.net.UnknownHostException http://detectportal.firefox.com/canonical.html
-			System.out.println("Made it past the toWebServerSocket decleration");																									 //Now no error, but don't make it to "did we make it here?" statement
+			toWebServerSocket = new Socket(host, 80);		  //java.net.UnknownHostException http://detectportal.firefox.com/canonical.html
+																												 //Now no error, but don't make it to "did we make it here?" statement
 																												 //Captured hostname detectportal.firefox.com
 																												 
 			//write to the server																			//while loop here? Eric-I think so? I Think we did what we did above where we read for the entirety of the response?
 			outToServer = toWebServerSocket.getOutputStream();
+			//recieve response
+			inFromServer = toWebServerSocket.getInputStream();
 
-			String line;
 
-			File myFile = new File(fileName);
+			System.out.println("Pre-While");
+			int counter = 0;
 
-			if(!myFile.exists()){
-				myFile.createNewFile();
-			}
-
-			FileWriter writer = new FileWriter(fileName);
-
-			System.out.println("Pre-while");
-			while((line = br.readLine())!=null){
-
+			while((counter = inFromServer.read(serverReply))!= -1){
+				System.out.println("in while");
 				outToServer.write(clientRequest);
-
-				if(true){
-					writer.write(line);
-				}
-
-				// //Write bytes to file
-				// fileWriter = new FileOutputStream(fileName);
-				// fileWriter.write(serverReply);
-				// System.out.println("did we make it here?");		//The answer was no :(
-				// //write to cache
-				// sendCachedInfoToClient(fileName);
-				// server.putCache(host, fileName);
-				// //fileWriter.write(clientRequest, true);
-				// fileWriter.close();
-				// toWebServerSocket.close();
-				System.out.println("End of while");
+				System.out.println("done while");
 			}
-
-			outToServer.flush();
 			
+			outToServer.flush();
+			//cache it 
+			//cacheFile.write(serverReply);
+			
+
+
+			//Write bytes to file
+			fileWriter = new FileOutputStream(fileName);
+			fileWriter.write(serverReply);
+			System.out.println("did we make it here?");		//The answer was no :(
+			//write to cache
+			sendCachedInfoToClient(fileName);
+			server.putCache(host, fileName);
+			//fileWriter.write(clientRequest, true);
+			fileWriter.close();
+			toWebServerSocket.close();
 		}
 		catch(Exception e){ e.printStackTrace(); }
 		
@@ -225,4 +220,3 @@ public class RequestHandler extends Thread {
 	}
 
 }
-
