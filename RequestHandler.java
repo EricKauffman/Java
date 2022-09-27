@@ -61,7 +61,7 @@ public class RequestHandler extends Thread {
 							server.writeLog(info);
 						
 							//if cache
-							if(server.getCache(requestString) != null){
+							if(server.getCache(url) != null){
 								//get file name from cache, aka the value. The key is the url
 								sendCachedInfoToClient(server.getCache(url));				//Does this need to be a filename? private void sendCachedInfoToClient(String fileName)
 							} else {
