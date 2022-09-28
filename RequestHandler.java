@@ -63,8 +63,10 @@ public class RequestHandler extends Thread {
 							//if cache
 							if(server.getCache(url) != null){
 								//get file name from cache, aka the value. The key is the url
+								System.out.println("Before sendCachedInfoToClient Method!!!");
 								sendCachedInfoToClient(server.getCache(url));				//Does this need to be a filename? private void sendCachedInfoToClient(String fileName)
 							} else {
+								System.out.println("Before proxyServertoClient Method!!!");
 								proxyServertoClient(request);
 							}
 						
@@ -74,7 +76,7 @@ public class RequestHandler extends Thread {
 					}
 				} 
 				catch (Exception e) {
-					System.out.println("Exception Found: " + e);
+					System.out.println("Exception Found: " + e + " RUH ROH");
 				}
 				
 			
@@ -138,18 +140,21 @@ public class RequestHandler extends Thread {
 				out.write(serverReply);
 				System.out.println("done while");
 			}
-			
+			System.out.println("Before caching");
 			//write to cache
 			sendCachedInfoToClient(fileName);
-			server.putCache(host, fileName);
+			server.putCache(requestURL, fileName);
+			//server.putCache(host, fileName);
+			System.out.println("after caching");
 
 			//Close sockets and file. Needs to be checked/fixed, maybe
 			out.close();
 			toWebServerSocket.close();
 			inFromServer.close();
 			inFromClient.close();
+			System.out.println("Closing streams and sockets");
 		}
-		catch(Exception e){ e.printStackTrace(); }
+		catch(Exception e){ System.out.println("BIG ERROR GAMING: " + e); }
 		
 
 
