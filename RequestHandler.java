@@ -46,7 +46,7 @@ public class RequestHandler extends Thread {
 			while((counter = inFromClient.read(request)) != -1){
 
 					String requestString = new String(request,StandardCharsets.UTF_8);
-					System.out.println("String Request ------------------------" + requestString);
+					//System.out.println("String Request ------------------------" + requestString);
 					
 					//If get
 					if(requestString.contains("GET")){
@@ -57,16 +57,16 @@ public class RequestHandler extends Thread {
 							String host = preHost[2];
 							String ip = InetAddress.getByName(host).getHostAddress();
 							String info = ip + " " + host;
-							System.out.println(info + " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							System.out.println("IP and HOSTNAME: " + info);
 							server.writeLog(info);
 						
 							//if cache
 							if(server.getCache(url) != null){
 								//get file name from cache, aka the value. The key is the url
-								System.out.println("Before sendCachedInfoToClient Method!!!");
+								System.out.println("SENDING CACHED INFO TO CLIENT...");
 								sendCachedInfoToClient(server.getCache(url));				//Does this need to be a filename? private void sendCachedInfoToClient(String fileName)
 							} else {
-								System.out.println("Before proxyServertoClient Method!!!");
+								System.out.println("WEB SERVER TO CLIENT CACHING...");
 								proxyServertoClient(request);
 							}
 						
@@ -76,7 +76,7 @@ public class RequestHandler extends Thread {
 					}
 				} 
 				catch (Exception e) {
-					System.out.println("Exception Found: " + e + " RUH ROH");
+					System.out.println("Exception Found: " + e);
 				}
 				
 			
@@ -115,7 +115,8 @@ public class RequestHandler extends Thread {
 		String host = preHost[2];
 
 
-		System.out.println("+++++++++++++++++++++++++++BEFORE THE TRY BLOCK OF PROXYSERVERTOCLIENT ++++++++++++++++++++++++++++");
+		//System.out.println("+++++++++++++++++++++++++++BEFORE THE TRY BLOCK OF PROXYSERVERTOCLIENT ++++++++++++++++++++++++++++");
+		System.out.println("Writing out client request...");
 		try{
 
 			// connect to the web server, host name
@@ -129,32 +130,33 @@ public class RequestHandler extends Thread {
 			outToServer.write(clientRequest);
 			//flush
 			outToServer.flush();
-
+			System.out.println("flushing stream...");
 
 			//process response from web server
-			System.out.println("Pre-While"); /*Creating counter for while*/ int counter = 0;
+			 
+			/*Creating counter for while*/ int counter = 0;
 			//Read the response from the server until it is empty and no more data is coming across the pipe/socket
 			while((counter = inFromServer.read(serverReply))!= -1){
-				System.out.println("in while");
+				
 				//write the data from the response to the file
 				out.write(serverReply);
-				System.out.println("done while");
+				
 			}
-			System.out.println("Before caching");
+			System.out.println("WRITING TO CACHE...");
 			//write to cache
 			sendCachedInfoToClient(fileName);
 			server.putCache(requestURL, fileName);
 			//server.putCache(host, fileName);
-			System.out.println("after caching");
+			
 
 			//Close sockets and file. Needs to be checked/fixed, maybe
 			out.close();
 			toWebServerSocket.close();
 			inFromServer.close();
 			inFromClient.close();
-			System.out.println("Closing streams and sockets");
+			System.out.println("Closing streams and sockets...");
 		}
-		catch(Exception e){ System.out.println("BIG ERROR GAMING: " + e); }
+		catch(Exception e){ System.out.println("Error Detected, Closing....: " + e); }
 		
 
 
