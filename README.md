@@ -1,8 +1,12 @@
 # Java
 
+
+
+
 CSCI 455 Project 1: Building a Proxy Server and Request Handler With a Log File and Caching
 
 How to Run:
+
 	1. Download a copy of the code. This will either be submitted as separate files on Blackboard
 	   or our github link to the project will be posted where the code can be pulled onto a local
          device. 
